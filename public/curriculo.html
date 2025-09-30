@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Currículos Profissionais</title>
+    <meta name="description" content="Crie currículos profissionais de forma rápida e fácil. Ferramenta gratuita para gerar CV em PDF com layout profissional e moderno.">
+    <link rel="stylesheet" href="curriculo.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Gerador de Currículos Profissionais</h1>
+            <p>Crie seu currículo profissional de forma rápida e fácil</p>
+        </header>
+
+        <div class="actions">
+            <button id="btnDownloadPDF" class="btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Baixar PDF
+            </button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="form">Formulário</button>
+            <button class="tab-btn" data-tab="preview">Pré-visualização</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- FORMULÁRIO -->
+            <div id="form" class="tab-panel active">
+                <form id="resumeForm" class="form">
+                    <!-- Dados Pessoais -->
+                    <div class="form-section">
+                        <h2>Dados Pessoais</h2>
+                        
+                        <div class="form-group">
+                            <label for="name">Nome Completo *</label>
+                            <input type="text" id="name" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="birthDate">Data de Nascimento *</label>
+                                <input type="date" id="birthDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Idade</label>
+                                <input type="number" id="age" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Endereço Completo *</label>
+                            <input type="text" id="address" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Telefone *</label>
+                                <input type="tel" id="phone" placeholder="(00) 00000-0000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-mail *</label>
+                                <input type="email" id="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="additionalInfo">Informações Adicionais</label>
+                            <textarea id="additionalInfo" rows="2" placeholder="Ex: CNH categoria B, disponibilidade imediata"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="photo">Foto 3x4</label>
+                            <input type="file" id="photo" accept="image/*">
+                            <small>Tamanho máximo: 5MB</small>
+                        </div>
+                    </div>
+
+                    <!-- Formação Acadêmica -->
+                    <div class="form-section">
+                        <h2>Formação Acadêmica</h2>
+                        <div id="educationList"></div>
+                        <button type="button" class="btn-secondary" onclick="addEducation()">+ Adicionar Formação</button>
+                    </div>
+
+                    <!-- Experiência Profissional -->
+                    <div class="form-section">
+                        <h2>Experiência Profissional</h2>
+                        <div id="experienceList"></div>
+                        <button type="button" class="btn-secondary" onclick="addExperience()">+ Adicionar Experiência</button>
+                    </div>
+
+                    <!-- Cursos -->
+                    <div class="form-section">
+                        <h2>Cursos</h2>
+                        <div id="coursesList"></div>
+                        <button type="button" class="btn-secondary" onclick="addCourse()">+ Adicionar Curso</button>
+                    </div>
+
+                    <!-- Habilidades -->
+                    <div class="form-section">
+                        <h2>Habilidades</h2>
+                        <div id="skillsList"></div>
+                        <button type="button" class="btn-secondary" onclick="addSkill()">+ Adicionar Habilidade</button>
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="form-section">
+                        <h2>Observações</h2>
+                        <div class="form-group">
+                            <textarea id="observations" rows="4" placeholder="Informações adicionais relevantes"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- PRÉ-VISUALIZAÇÃO -->
+            <div id="preview" class="tab-panel">
+                <div class="preview-container">
+                    <div id="resume-preview" class="resume">
+                        <!-- Cabeçalho com Dados Pessoais e Foto -->
+                        <div class="resume-header">
+                            <div class="resume-personal">
+                                <h1 id="preview-name">SEU NOME COMPLETO</h1>
+                                <div class="resume-info">
+                                    <p><strong>Data de Nascimento:</strong> <span id="preview-birthDate">__/__/____</span> - <strong>Idade:</strong> <span id="preview-age">__</span></p>
+                                    <p><strong>Endereço:</strong> <span id="preview-address">Seu endereço completo</span></p>
+                                    <p><strong>Telefone:</strong> <span id="preview-phone">(00) 00000-0000</span></p>
+                                    <p><strong>E-mail:</strong> <span id="preview-email">seu@email.com</span></p>
+                                    <p id="preview-additionalInfo-container" style="display: none;"><span id="preview-additionalInfo"></span></p>
+                                </div>
+                            </div>
+                            <div class="resume-photo">
+                                <div id="preview-photo" class="photo-placeholder">Foto 3x4</div>
+                            </div>
+                        </div>
+
+                        <!-- Formação Acadêmica -->
+                        <div id="preview-education-section" class="resume-section" style="display: none;">
+                            <h2>FORMAÇÃO ACADÊMICA</h2>
+                            <div id="preview-education"></div>
+                        </div>
+
+                        <!-- Experiência Profissional -->
+                        <div id="preview-experience-section" class="resume-section" style="display: none;">
+                            <h2>EXPERIÊNCIA PROFISSIONAL</h2>
+                            <div id="preview-experience"></div>
+                        </div>
+
+                        <!-- Cursos -->
+                        <div id="preview-courses-section" class="resume-section" style="display: none;">
+                            <h2>CURSOS</h2>
+                            <div id="preview-courses"></div>
+                        </div>
+
+                        <!-- Habilidades -->
+                        <div id="preview-skills-section" class="resume-section" style="display: none;">
+                            <h2>HABILIDADES</h2>
+                            <ul id="preview-skills"></ul>
+                        </div>
+
+                        <!-- Observações -->
+                        <div id="preview-observations-section" class="resume-section" style="display: none;">
+                            <h2>OBSERVAÇÕES</h2>
+                            <p id="preview-observations"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+    <script src="curriculo.js"></script>
+</body>
+</html>
